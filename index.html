@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cheat Boxes - Products</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      font-family: Arial, sans-serif;
+      color: white;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Botón Home */
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 80px; /* A la izquierda del + que está a 20px */
+      background: #00aaff;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 100;
+      font-weight: bold;
+    }
+
+    .home-btn svg {
+      fill: white;
+    }
+
+    /* Botón para añadir secciones */
+    .add-section-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #00aaff;
+      color: white;
+      font-size: 24px;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    /* Fondo animado */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(0, 200, 255, 0.6);
+      border-radius: 50%;
+      animation: floatParticle 10s linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      50% { transform: translateY(-100px) scale(1.3); opacity: 0.7; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .products-section {
+      position: relative;
+      padding: 50px 20px;
+      min-height: 100vh;
+      z-index: 1;
+    }
+
+    .title-wrapper {
+      position: relative;
+      display: inline-block;
+      margin: 10px 20px 30px 20px;
+      z-index: 2;
+    }
+
+    .title-background {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-size: 65px;
+      font-weight: 900;
+      color: rgba(80, 80, 80, 0.4);
+      transform: translate(5px, 0);
+      white-space: nowrap;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .section-title {
+      font-size: 48px;
+      font-weight: 900;
+      color: white;
+      position: relative;
+      z-index: 1;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .delete-section-btn {
+      background: transparent;
+      border: none;
+      opacity: 0;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .delete-section-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: #ff4444;
+    }
+
+    .title-wrapper:hover .delete-section-btn {
+      opacity: 1;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
+      padding: 9px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+      position: relative;
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card img {
+      width: 45%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .card h3 {
+      margin: 8px 0 6px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #333;
+      padding: 2px 5px;
+      font-size: 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    /* Botón centrado */
+    .button-group {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .btn-info {
+      background: #2b2b2b;
+      color: white;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 22px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-info:hover {
+      background: #2b2b2b;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.4),
+                  0 0 24px rgba(0, 255, 0, 0.3),
+                  0 0 36px rgba(0, 0, 255, 0.3);
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .delete-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #ff4444;
+    }
+
+    .card:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .add-card {
+      background-color: #222;
+      border: 2px dashed #555;
+      color: #555;
+      font-size: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border 0.3s, color 0.3s;
+      width: 100%;
+      height: 200px;
+    }
+
+    .add-card:hover {
+      border-color: #00aaff;
+      color: #00aaff;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s;
+      z-index: 10;
+    }
+
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: white;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: #555;
+      color: white;
+    }
+
+    .btn-add {
+      background: #00aaff;
+      color: white;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="home-btn" data-url="https://codepen.io/Alvaro-torres-the-reactor/pen/RNWgVGb" title="Home">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="24" height="24" style="vertical-align: middle;">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </svg>
+    Home
+  </button>
+  <button class="add-section-btn" id="addSection">+</button>
+
+  <div class="background" id="background"></div>
+  <div id="main-container"></div>
+
+  <!-- Modal agregar producto -->
+  <div class="modal" id="modal-add">
+    <div class="modal-content">
+      <h3>Agregar producto</h3>
+      <input type="text" id="productName" placeholder="Nombre del producto" />
+      <input type="text" id="productImage" placeholder="URL de la imagen" />
+      <input type="text" id="productUrl" placeholder="URL de la página" />
+      <input type="text" id="productPassword" placeholder="Contraseña del producto" />
+      <button class="btn-add" id="confirmAdd">Agregar</button>
+      <button class="btn-cancel" id="cancelModal">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal contraseña -->
+  <div class="modal" id="modal-password">
+    <div class="modal-content">
+      <h3>Contraseña requerida</h3>
+      <input type="password" id="passwordInput" placeholder="Ingrese la contraseña" />
+      <p class="error" id="error-msg" style="display:none;">Contraseña incorrecta, espere 30s</p>
+      <button class="btn-add" id="checkPassword">Entrar</button>
+      <button class="btn-cancel" id="cancelPassword">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    let sections = JSON.parse(localStorage.getItem('sections')) || [
+      {
+        title: "Rainbow Six Siege",
+        products: [
+          { name: "Ranked Ready", img: "https://i.postimg.cc/FsFGF6Js/Chat-GPT-Image-6-ago-2025-21-59-11.png", url: "https://example.com/ranked", password: "123" }
+        ]
+      }
+    ];
+
+    const background = document.getElementById('background');
+    const mainContainer = document.getElementById('main-container');
+
+    // Animación de partículas
+    setInterval(() => {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+      background.appendChild(particle);
+      setTimeout(() => particle.remove(), 10000);
+    }, 700);
+
+    function saveSections() {
+      localStorage.setItem('sections', JSON.stringify(sections));
+    }
+
+    function renderSections() {
+      mainContainer.innerHTML = '';
+      sections.forEach((section, sectionIndex) => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'products-section';
+        sectionDiv.innerHTML = `
+          <div class="title-wrapper">
+            <div class="title-background">${section.title}</div>
+            <div class="section-title">
+              ${section.title}
+              <button class="delete-section-btn" onclick="deleteSection(${sectionIndex})">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5h-11L5 9zm5-5h4v2h-4V4z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="container" id="section-${sectionIndex}"></div>
+        `;
+        mainContainer.appendChild(sectionDiv);
+
+        const productContainer = sectionDiv.querySelector(`#section-${sectionIndex}`);
+        section.products.forEach((product, productIndex) => {
+          const productCard = document.createElement('div');
+          productCard.className = 'card visible';
+          productCard.innerHTML = `
+            <button class="delete-btn" onclick="deleteProduct(${sectionIndex}, ${productIndex})">
+              <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5h-11L5 9zm5-5h4v2h-4V4z"/></svg>
+            </button>
+            <img src="${product.img}" alt="${product.name}" />
+            <h3>${product.name}</h3>
+            <div class="tag">${product.password}</div>
+            <div class="button-group">
+              <button class="btn-info" onclick="openUrl(${sectionIndex}, ${productIndex})">Info</button>
+            </div>
+          `;
+          productContainer.appendChild(productCard);
+        });
+
+        // Añadir tarjeta para añadir producto
+        const addCard = document.createElement('div');
+        addCard.className = 'add-card';
+        addCard.textContent = '+';
+        addCard.onclick = () => openAddModal(sectionIndex);
+        productContainer.appendChild(addCard);
+      });
+    }
+
+    function deleteSection(index) {
+      if(confirm('¿Seguro que quieres eliminar esta sección?')) {
+        sections.splice(index, 1);
+        saveSections();
+        renderSections();
+      }
+    }
+
+    function deleteProduct(sectionIndex, productIndex) {
+      if(confirm('¿Seguro que quieres eliminar este producto?')) {
+        sections[sectionIndex].products.splice(productIndex, 1);
+        saveSections();
+        renderSections();
+      }
+    }
+
+    function openUrl(sectionIndex, productIndex) {
+      const product = sections[sectionIndex].products[productIndex];
+      // Pide contraseña antes de abrir
+      openPasswordModal(product.password, () => {
+        window.open(product.url, '_blank');
+      });
+    }
+
+    // Modal agregar producto
+    const modalAdd = document.getElementById('modal-add');
+    const productNameInput = document.getElementById('productName');
+    const productImageInput = document.getElementById('productImage');
+    const productUrlInput = document.getElementById('productUrl');
+    const productPasswordInput = document.getElementById('productPassword');
+    let currentSectionIndex = null;
+
+    function openAddModal(sectionIndex) {
+      currentSectionIndex = sectionIndex;
+      productNameInput.value = '';
+      productImageInput.value = '';
+      productUrlInput.value = '';
+      productPasswordInput.value = '';
+      modalAdd.classList.add('active');
+    }
+
+    document.getElementById('confirmAdd').onclick = () => {
+      const name = productNameInput.value.trim();
+      const img = productImageInput.value.trim();
+      const url = productUrlInput.value.trim();
+      const password = productPasswordInput.value.trim();
+
+      if(!name || !img || !url || !password) {
+        alert('Por favor completa todos los campos');
+        return;
+      }
+      sections[currentSectionIndex].products.push({ name, img, url, password });
+      saveSections();
+      renderSections();
+      modalAdd.classList.remove('active');
+    };
+
+    document.getElementById('cancelModal').onclick = () => {
+      modalAdd.classList.remove('active');
+    };
+
+    // Modal contraseña
+    const modalPassword = document.getElementById('modal-password');
+    const passwordInput = document.getElementById('passwordInput');
+    const errorMsg = document.getElementById('error-msg');
+    let correctCallback = null;
+    let lockedUntil = 0;
+
+    function openPasswordModal(correctPassword, callback) {
+      if(Date.now() < lockedUntil) {
+        alert('Demasiados intentos fallidos. Por favor espere 30 segundos.');
+        return;
+      }
+      passwordInput.value = '';
+      errorMsg.style.display = 'none';
+      modalPassword.classList.add('active');
+      correctCallback = () => {
+        modalPassword.classList.remove('active');
+        callback();
+      };
+      passwordInput.dataset.correctPassword = correctPassword;
+    }
+
+    document.getElementById('checkPassword').onclick = () => {
+      const entered = passwordInput.value;
+      const correct = passwordInput.dataset.correctPassword;
+      if(entered === correct) {
+        errorMsg.style.display = 'none';
+        lockedUntil = 0;
+        if(correctCallback) correctCallback();
+      } else {
+        errorMsg.style.display = 'block';
+        lockedUntil = Date.now() + 30000;
+      }
+    };
+
+    document.getElementById('cancelPassword').onclick = () => {
+      modalPassword.classList.remove('active');
+    };
+
+    // Añadir nueva sección
+    document.getElementById('addSection').onclick = () => {
+      const newTitle = prompt('Ingrese título para la nueva sección');
+      if(newTitle) {
+        sections.push({ title: newTitle, products: [] });
+        saveSections();
+        renderSections();
+      }
+    };
+
+    // Botón Home redirige a la URL indicada
+    document.querySelector('.home-btn').addEventListener('click', function() {
+      const url = this.getAttribute('data-url');
+      if(url) {
+        window.location.href = url;
+      }
+    });
+
+    renderSections();
+  </script>
+</body>
+</html>
